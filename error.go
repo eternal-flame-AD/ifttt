@@ -7,7 +7,9 @@ import (
 )
 
 var (
-	ErrorInvalidToken       = errors.New("Token invalid")
+	// ErrorInvalidToken is the error that you should return if the request was unauthorized
+	ErrorInvalidToken = errors.New("Token invalid")
+	// ErrorPanicDuringProcess is returned to the server when a panic occurred while handling the request
 	ErrorPanicDuringProcess = errors.New("Internal Error")
 )
 

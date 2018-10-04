@@ -19,31 +19,61 @@ var (
 	urlRegexpActionFieldOption            = regexp.MustCompile("^/ifttt/v1/actions/([^/]+)/fields/([^/]+)/options$")
 )
 
+// RequestType enumerates IFTTT request types
 type RequestType int
 
 const (
+	// Unknown unknown request types
 	Unknown RequestType = iota
+	// TriggerFetch polls triggers for update information
+	// https://platform.ifttt.com/docs/api_reference#triggers
 	TriggerFetch
+	// TriggerDeleteNotify notifies the trigger service that a trigger identifies by trigger identity has been removed and the server can stop making notifications regarding this trigger
+	// https://platform.ifttt.com/docs/api_reference#trigger-identity
 	TriggerDeleteNotify
+	// TriggerDynamicOptions requests dynamic field options from a trigger
+	// https://platform.ifttt.com/docs/api_reference#trigger-field-dynamic-options
 	TriggerDynamicOptions
+	// TriggerDynamicValidation requests the validation of a single field of a trigger
+	// https://platform.ifttt.com/docs/api_reference#trigger-field-dynamic-validation
 	TriggerDynamicValidation
+	// TriggerContextualValidation requests the validation of a combination of the trigger fields, you need to contact IFTTT to have this enabled
+	// https://platform.ifttt.com/docs/api_reference#trigger-field-contextual-validation
 	TriggerContextualValidation
+	// ActionTrigger triggers an action
+	// https://platform.ifttt.com/docs/api_reference#actions
 	ActionTrigger
+	// ActionDynamicOptions requests dynamic field options from an action
+	// https://platform.ifttt.com/docs/api_reference#action-fields
 	ActionDynamicOptions
+	// ServiceStatus requests for the availability of the service
+	// https://platform.ifttt.com/docs/api_reference#service-status
 	ServiceStatus
+	// UserInfoRequest requests for the information of a user which will be displayed to the user on his service page
+	// https://platform.ifttt.com/docs/api_reference#user-information
 	UserInfoRequest
 )
 
+// Request represents a parsed request from IFTTT
 type Request struct {
-	Authenticated   bool
+	// Authenticated whether the request was carrying an OAuth token or not
+	Authenticated bool
+	// UserAccessToken if Authenticated is true, this is the token provided by IFTTT, is not, this is set to the claimed Service Key from IFTTT
 	UserAccessToken string
-	RequestUUID     string
-	Slug            string
-	FieldSlug       string
+	// RequestUUID is a unique string which identifies requests for debugging purposes
+	RequestUUID string
+	// Slug the slug name of the action/trigger, you generally dont need to check this as requests are automatically routed by the package to their endpoints.
+	Slug string
+	// FieldSlug the field slug requested by the request, empty string in non field-related requests
+	FieldSlug string
+	// TriggerIdentity the identification of the trigger which initiated this request, empty string if not available
 	TriggerIdentity string
-	DecodedBody     *gabs.Container
-	Type            RequestType
-	RawRequest      *http.Request
+	// DecodedBody the decoded JSON body of the request, you can extract data manually if it was not exposed by this package
+	DecodedBody *gabs.Container
+	// Type the type of the request, you generally dont need to check this as requests are automatically routed by the package to their endpoints.
+	Type RequestType
+	// RawRequest the raw HTTP request from IFTTT
+	RawRequest *http.Request
 }
 
 func parseRequest(r *http.Request) (*Request, error) {

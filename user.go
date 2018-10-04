@@ -2,6 +2,7 @@ package ifttt
 
 import "github.com/Jeffail/gabs"
 
+// UserInfo represents the user info returned to the user info request
 type UserInfo struct {
 	Name string
 	ID   string

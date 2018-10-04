@@ -2,10 +2,14 @@ package ifttt
 
 import "github.com/Jeffail/gabs"
 
+// DynamicOption describes the result of a dynamic field options request.
+// To created a nested OptionList, add the inner options as a *DynamicOption and pass it to the outer DynamicOption by (*DynamicOption).AddCategory
 type DynamicOption struct {
 	options map[string]interface{}
 }
 
+// AddCategory adds a category item to the DynamicOption
+// Note that the values inside the category could be selected but not the category itself.
 func (c *DynamicOption) AddCategory(name string, value *DynamicOption) {
 	if c.options == nil {
 		c.options = make(map[string]interface{})
@@ -13,6 +17,7 @@ func (c *DynamicOption) AddCategory(name string, value *DynamicOption) {
 	c.options[name] = value
 }
 
+// AddString adds an option value labeled by name to the DynamicOption
 func (c *DynamicOption) AddString(name string, value string) {
 	if c.options == nil {
 		c.options = make(map[string]interface{})

@@ -6,6 +6,9 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
+// Notification is a wrapper for trigger realtime notifications
+// Add userids and/or trigger identies to this struct and send this through ifttt.Service.Notify to inform IFTTT that these triggers/trigggers owned by these users has an update and IFTTT should poll for updates now.
+// https://platform.ifttt.com/docs/api_reference#realtime-api
 type Notification struct {
 	users    []string
 	triggers []string
@@ -21,6 +24,8 @@ func (c *Notification) len() int {
 	}
 	return s
 }
+
+// AddUser adds a userid to this notification
 func (c *Notification) AddUser(userid string) error {
 	if c.users == nil {
 		c.users = make([]string, 0)
@@ -32,6 +37,7 @@ func (c *Notification) AddUser(userid string) error {
 	return nil
 }
 
+// AddTrigger adds a trigger identified by trigger identity to the notification
 func (c *Notification) AddTrigger(triggerIdent string) error {
 	if c.triggers == nil {
 		c.triggers = make([]string, 0)

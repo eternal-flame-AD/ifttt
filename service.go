@@ -14,13 +14,19 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+// Service described the IFTTT service and handles requests from IFTTT
 type Service struct {
-	triggers   map[string]Trigger
-	actions    map[string]Action
+	triggers map[string]Trigger
+	actions  map[string]Action
+	// IFTTT service key used to identify your service
+	// get it from you dashboard
 	ServiceKey string
-	Healthy    func() bool
-	UserInfo   func(req *Request) (*UserInfo, error)
-	logger     *log.Logger
+	// Healthy should return whether the service is functioning normally
+	Healthy func() bool
+	// UserInfo should return user info identified by req.UserAccessToken
+	// if your service does not require user info, return nil, nil here should be OK
+	UserInfo func(req *Request) (*UserInfo, error)
+	logger   *log.Logger
 }
 
 func prepareHeader(w http.ResponseWriter) {
@@ -28,6 +34,7 @@ func prepareHeader(w http.ResponseWriter) {
 	header.Set("Content-Type", "application/json")
 }
 
+// RegisterTrigger registers a trigger handler which implements Trigger
 func (c *Service) RegisterTrigger(slug string, handler Trigger) {
 	if c.triggers == nil {
 		c.triggers = make(map[string]Trigger)
@@ -35,6 +42,7 @@ func (c *Service) RegisterTrigger(slug string, handler Trigger) {
 	c.triggers[slug] = handler
 }
 
+// RegisterAction registers an action handler which implements Action
 func (c *Service) RegisterAction(slug string, handler Action) {
 	if c.actions == nil {
 		c.actions = make(map[string]Action)
@@ -42,10 +50,12 @@ func (c *Service) RegisterAction(slug string, handler Action) {
 	c.actions[slug] = handler
 }
 
+// EnableDebug enabled debug output of this service
 func (c *Service) EnableDebug() {
 	c.logger = log.New(os.Stdout, "IFTTT: ", log.LstdFlags)
 }
 
+// ServeHTTP implements http.Handler and handles http requests
 func (c Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -272,6 +282,7 @@ func (c Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Notify implements the IFTTT realtime API and sends notifications to the IFTTT realtime notification endpoint
 func (c *Service) Notify(evt Notification) error {
 	req, err := http.NewRequest("POST", "https://realtime.ifttt.com/v1/notifications", bytes.NewReader(evt.marshal()))
 	if err != nil {
