@@ -9,7 +9,7 @@ func TestTriggerEventCollection(t *testing.T) {
 	col := TriggerEventCollection{}
 
 	col = append(col, TriggerEvent{
-		Slugs: map[string]string{
+		Ingredients: map[string]string{
 			"foo": "bar",
 		},
 		Meta: TriggerEventMeta{
@@ -19,7 +19,7 @@ func TestTriggerEventCollection(t *testing.T) {
 	})
 
 	col = append(col, TriggerEvent{
-		Slugs: map[string]string{
+		Ingredients: map[string]string{
 			"foo": "bar",
 		},
 		Meta: TriggerEventMeta{

@@ -28,8 +28,8 @@ type TriggerEventCollection []TriggerEvent
 // (1) The trigger has NOT been fired by an event with identical IDs
 // (2) The event happened later than the time the trigger was created
 type TriggerEvent struct {
-	// Slugs contains the trigger field values of this event
-	Slugs map[string]string
+	// Ingredients contains values of the ingredients of this event
+	Ingredients map[string]string
 	// Meta contains metadata of this event
 	Meta TriggerEventMeta
 }
@@ -95,7 +95,7 @@ func (c TriggerEventCollection) marshal() []byte {
 		obj := gabs.New()
 		obj.Set(evt.Meta.ID, "meta", "id")
 		obj.Set(evt.Meta.Time.Unix(), "meta", "timestamp")
-		for key, val := range evt.Slugs {
+		for key, val := range evt.Ingredients {
 			obj.Set(val, key)
 		}
 

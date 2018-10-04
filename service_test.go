@@ -56,7 +56,7 @@ func (c testTrigger) Poll(req *TriggerPollRequest, r *Request) (TriggerEventColl
 	res := make(TriggerEventCollection, 0)
 
 	evt1 := TriggerEvent{
-		Slugs: req.TriggerFields,
+		Ingredients: req.TriggerFields,
 		Meta: TriggerEventMeta{
 			r.RequestUUID,
 			time.Unix(10000, 0),
