@@ -136,7 +136,7 @@ func TestService(t *testing.T) {
 
 	Convey("Test Mock Service", t, func() {
 		service := &Service{
-			ServiceKey: "abcdef",
+			ServiceKey: "vFRqPGZBmZjB8JPp3mBFqOdt",
 			Healthy: func() bool {
 				return health
 			},
@@ -155,6 +155,36 @@ func TestService(t *testing.T) {
 			},
 		}
 		service.EnableDebug()
+
+		Convey("Test Invaild Service Key", func() {
+
+			testthis := func(ok bool) {
+
+				health = ok
+				req := httptest.NewRequest("GET", "/ifttt/v1/status", bytes.NewBufferString(""))
+
+				mockHeader(`Host api.example-service.com
+				IFTTT-Service-Key: aaa
+				Accept: application/json
+				Accept-Charset: utf-8
+				Accept-Encoding: gzip, deflate
+				X-Request-ID: 0715f98e65f749aba2fc243eac1e3c09`, req)
+
+				res := httptest.NewRecorder()
+
+				service.ServeHTTP(res, req)
+
+				if ok {
+					So(res.Code, ShouldEqual, 401)
+				} else {
+					So(res.Code, ShouldEqual, 401)
+				}
+			}
+
+			testthis(true)
+			testthis(false)
+
+		})
 
 		Convey("Test Health Check", func() {
 

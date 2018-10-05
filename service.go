@@ -87,7 +87,16 @@ func (c Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if c.logger != nil {
-		c.logger.Printf("Got request %s - %s with type %d", r.RequestURI, req.DecodedBody.String(), req.Type)
+		c.logger.Printf("Got request %s - %s with type %d\n", r.RequestURI, req.DecodedBody.String(), req.Type)
+	}
+
+	// If the request is unauthenticated and the service key is incorrect, refuse to handle it.
+	if !req.Authenticated && req.UserAccessToken != c.ServiceKey {
+		if c.logger != nil {
+			c.logger.Printf("Request %s refused due to incorrect claimed service key: %s", r.RequestURI, req.UserAccessToken)
+		}
+		handleError(ErrorInvalidToken)
+		return
 	}
 
 	switch req.Type {
