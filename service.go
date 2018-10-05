@@ -68,6 +68,13 @@ func (c Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
+	if c.actions == nil {
+		c.actions = make(map[string]Action)
+	}
+	if c.triggers == nil {
+		c.triggers = make(map[string]Trigger)
+	}
+
 	handleError := func(err error) {
 		if err == ErrorInvalidToken {
 			w.WriteHeader(401)
