@@ -22,9 +22,10 @@ type Service struct {
 	// get it from you dashboard
 	ServiceKey string
 	// Healthy should return whether the service is functioning normally
+	// Defaults to true
 	Healthy func() bool
 	// UserInfo should return user info identified by req.UserAccessToken
-	// if your service does not require user info, return nil, nil here should be OK
+	// if your service does not require authentication, passing nil should be OK
 	UserInfo func(req *Request) (*UserInfo, error)
 	logger   *log.Logger
 }
@@ -99,7 +100,9 @@ func (c Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte{})
 		}
 	case UserInfoRequest:
-		if info, err := c.UserInfo(req); err != nil {
+		if c.UserInfo == nil {
+			handleError(errors.New("User info not available"))
+		} else if info, err := c.UserInfo(req); err != nil {
 			handleError(err)
 		} else {
 			w.WriteHeader(200)
