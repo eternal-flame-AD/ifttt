@@ -76,7 +76,7 @@ func (c Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	handleError := func(err error) {
-		if err == ErrorInvalidToken {
+		if _, ok := err.(AuthError); ok {
 			w.WriteHeader(401)
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -103,7 +103,7 @@ func (c Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if c.logger != nil {
 			c.logger.Printf("Request %s refused due to incorrect claimed service key: %s", r.RequestURI, req.UserAccessToken)
 		}
-		handleError(ErrorInvalidToken)
+		handleError(AuthError{"Service Key does not present."})
 		return
 	}
 
@@ -153,7 +153,7 @@ func (c Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if res, skip, err := action.Handle(ahq, req); err != nil {
-			if err == ErrorInvalidToken {
+			if _, ok := err.(AuthError); ok {
 				handleError(err)
 			}
 			w.WriteHeader(400)

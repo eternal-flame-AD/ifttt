@@ -40,7 +40,7 @@ func (c testAction) Options(req *Request) (*DynamicOption, error) {
 
 	}
 	if req.UserAccessToken == "wrongtoken" {
-		return nil, ErrorInvalidToken
+		return nil, AuthError{}
 	}
 	return nil, errors.New("Unknown error")
 }
@@ -85,7 +85,7 @@ func (c testTrigger) Options(req *Request) (*DynamicOption, error) {
 
 	}
 	if req.UserAccessToken == "wrongtoken" {
-		return nil, ErrorInvalidToken
+		return nil, AuthError{}
 	}
 	return nil, errors.New("Unknown error")
 }
@@ -127,7 +127,7 @@ func (c testAction) Handle(r *ActionHandleRequest, req *Request) (res *ActionRes
 		}, false, nil
 	}
 	if req.UserAccessToken == "wrongtoken" {
-		return nil, true, ErrorInvalidToken
+		return nil, true, AuthError{}
 	}
 	return nil, false, errors.New("Unknown error")
 }
@@ -149,7 +149,7 @@ func TestService(t *testing.T) {
 					}, nil
 				}
 				if req.UserAccessToken == "wrongtoken" {
-					return nil, ErrorInvalidToken
+					return nil, AuthError{}
 				}
 				return nil, errors.New("Unknown error")
 			},

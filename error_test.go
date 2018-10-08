@@ -18,3 +18,26 @@ func TestMarshalError(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestAuthError(t *testing.T) {
+	isAuthError := func(err error) bool {
+		_, ok := err.(AuthError)
+		return ok
+	}
+
+	if !isAuthError(AuthError{"test"}) {
+		t.Errorf("Failed to parse auth error")
+		t.Fail()
+	}
+
+	if !isAuthError(AuthError{}) {
+		t.Errorf("Failed to parse auth error")
+		t.Fail()
+	}
+
+	if isAuthError(errors.New("test")) {
+		t.Errorf("Failed to parse auth error")
+		t.Fail()
+	}
+
+}

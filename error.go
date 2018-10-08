@@ -7,11 +7,22 @@ import (
 )
 
 var (
-	// ErrorInvalidToken is the error that you should return if the request was unauthorized
-	ErrorInvalidToken = errors.New("Token invalid")
 	// ErrorPanicDuringProcess is returned to the server when a panic occurred while handling the request
 	ErrorPanicDuringProcess = errors.New("Internal Error")
 )
+
+// AuthError is returned as an error when the request failed to satisfy authentication requirements
+// An optional Message can be defined to return to the user as an explanation of the error, defaults to "Token invalid"
+type AuthError struct {
+	Message string
+}
+
+func (c AuthError) Error() string {
+	if len(c.Message) > 0 {
+		return c.Message
+	}
+	return "Token invalid"
+}
 
 func marshalError(err error, skip bool) []byte {
 	data := gabs.New()
