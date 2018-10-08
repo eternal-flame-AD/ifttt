@@ -92,6 +92,7 @@ func (c Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error"))
 		return
 	}
+	req.ServiceRef = &c
 
 	if c.logger != nil {
 		c.logger.Printf("Got request %s - %s with type %d\n", r.RequestURI, req.DecodedBody.String(), req.Type)

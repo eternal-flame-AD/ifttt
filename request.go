@@ -74,6 +74,8 @@ type Request struct {
 	Type RequestType
 	// RawRequest the raw HTTP request from IFTTT
 	RawRequest *http.Request
+	// ServiceRef reference to the service struct
+	ServiceRef *Service
 }
 
 func parseRequest(r *http.Request) (*Request, error) {
