@@ -8,3 +8,7 @@
 Golang wrapper for the IFTTT Service API. Build your own IFTTT service as easily as registering an HTTP handler now!
 
 **This package is still under startup and expect breaking API changes without prior notifications**
+
+## Examples
+
+[IFTTT-Netease](https://github.com/eternal-flame-AD/ifttt-netease)
